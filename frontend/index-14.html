@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health Strata · المخطط الصحي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F6EFE4; --cream2:#FBF0DE; --white:#FDF8EF; --line:#E8DDCB;
+  --brown:#6E5763; --brown2:#9C8A83; --green:#5FA57C; --green-fill:#E9F4EC;
+  --peach:#EAD3B4; --pink2:#FBE6EA;
+  --voice-fill:#FBE6EA; --voice-border:#F1CFD7; --voice-ink:#B85A6B;
+  --body-fill:#FBEAD7;  --body-border:#F1D4B4;  --body-ink:#BC6E2F;
+  --drug-fill:#E4F0EA;  --drug-border:#C9E4D6;  --drug-ink:#4E9C7C;
+  --lab-fill:#E6EBF7;   --lab-border:#CED8EF;   --lab-ink:#6B80BE;
+  --med-fill:#EDE5F5;   --med-border:#DACBEC;   --med-ink:#855C7E;
+  --rose:#B85A6B; --alert:#C7603F;
+  --font:"IBM Plex Sans Arabic","Tajawal",Arial,"Tahoma",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--brown);font-family:var(--font);-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font:inherit;color:inherit}
+.i{display:inline-flex;align-items:center;justify-content:center}
+.i svg{width:1em;height:1em}
+.app{max-width:920px;margin:auto;min-height:100vh}
+header{padding:20px 20px 8px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:48px;height:48px;border-radius:15px;background:var(--pink2);border:1px solid var(--voice-border);display:grid;place-items:center}
+.logo svg{width:26px;height:26px}
+h1{margin:0;font-size:23px;color:var(--rose);letter-spacing:.3px}
+.subtitle{margin:3px 0 0;color:var(--brown2);font-size:12.5px}
+.add-btn{background:var(--rose);color:#fff;border:0;border-radius:999px;padding:10px 16px;cursor:pointer;font-weight:700;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.add-btn .i svg{width:15px;height:15px;stroke-width:2.2}
+nav{display:flex;gap:8px;padding:8px 20px;overflow:auto}
+nav button{border:1px solid var(--line);background:var(--white);color:var(--brown);padding:10px 15px;border-radius:18px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+nav button.active{background:var(--pink2);border-color:var(--voice-border);font-weight:700}
+nav button .i svg{width:15px;height:15px}
+main{padding:12px 20px 40px}
+.page{display:none}.page.active{display:block}
+.section-title{margin:22px 0 10px;font-size:19px}
+.muted{color:#8E7C6E;font-size:13px}.small{font-size:12px}
+.card{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:16px}
+.primary{background:var(--rose);color:#fff;border:0;border-radius:14px;padding:12px 18px;cursor:pointer;font-weight:700}
+.ghost{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:11px 15px;cursor:pointer;color:var(--brown);display:inline-flex;align-items:center;gap:7px}
+.ghost .i svg{width:16px;height:16px}
+.intro{background:linear-gradient(135deg,var(--white),var(--pink2));border:1px solid var(--voice-border);border-radius:24px;padding:22px}
+.intro h2{font-size:22px;margin:0 0 8px}.intro p{font-size:15px;line-height:1.75;margin:0;max-width:640px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+.metric{font-size:24px;font-weight:700}
+.mic{width:26px;height:26px;margin-bottom:8px}.mic svg{width:26px;height:26px;stroke-width:1.7}
+.recent .ri{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:8px 0;border-bottom:1px dashed var(--line);align-items:center}
+.recent .ri .i{margin-left:5px}.recent .ri .i svg{width:15px;height:15px}
+
+/* ============ COLUMN TIMELINE CHART (5 lanes) ============ */
+.chart-hint{font-size:11.5px;color:var(--brown2);margin:6px 0}
+.board-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -20px;padding:0 20px}
+.board{min-width:780px;position:relative;margin-top:6px}
+.bhead{display:grid;grid-template-columns:44px 1fr 1fr 1fr 1fr 1fr;gap:8px;position:relative;z-index:3;margin-bottom:4px}
+.bhead .h{text-align:center;font-size:11.5px;font-weight:700;padding:4px 2px 8px;display:flex;align-items:center;justify-content:center;gap:5px;line-height:1.2}
+.bhead .h svg{width:15px;height:15px}
+.bhead .h.v{color:var(--voice-ink);border-bottom:3px solid var(--voice-ink)}
+.bhead .h.b{color:var(--body-ink);border-bottom:3px solid var(--body-ink)}
+.bhead .h.d{color:var(--drug-ink);border-bottom:3px solid var(--drug-ink)}
+.bhead .h.l{color:var(--lab-ink);border-bottom:3px solid var(--lab-ink)}
+.bhead .h.m{color:var(--med-ink);border-bottom:3px solid var(--med-ink)}
+.bhead .h.t{color:var(--brown2);font-weight:600;font-size:10.5px;align-self:flex-end;padding-bottom:10px}
+
+.tl-wrap{position:relative}
+.rails{position:absolute;inset:0;display:grid;grid-template-columns:44px 1fr 1fr 1fr 1fr 1fr;gap:8px;z-index:0;pointer-events:none}
+.rails .r{position:relative}
+.rails .r.rail::before{content:"";position:absolute;top:0;bottom:0;right:50%;transform:translateX(50%);width:2px;border-radius:2px;opacity:.55}
+.rails .r.v::before{background:var(--voice-border)}
+.rails .r.b::before{background:var(--body-border)}
+.rails .r.d::before{background:var(--drug-border)}
+.rails .r.l::before{background:var(--lab-border)}
+.rails .r.m::before{background:var(--med-border)}
+
+.date-div{position:relative;z-index:2;margin:14px 0 8px;display:flex;align-items:center;gap:10px}
+.date-div b{font-size:12px;color:var(--med-ink);background:var(--cream);border:1px solid var(--med-border);padding:3px 12px;border-radius:999px}
+.date-div em{flex:1;height:1px;background:var(--line);display:block}
+
+.brow{display:grid;grid-template-columns:44px 1fr 1fr 1fr 1fr 1fr;gap:8px;align-items:stretch;position:relative;z-index:1;margin-bottom:6px;min-height:50px}
+.tcell{display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--brown2);font-weight:600}
+.lcell{position:relative;display:flex;flex-direction:column;gap:6px;justify-content:center;align-items:center;padding:5px 0;min-height:44px}
+.dot{position:absolute;top:50%;right:50%;transform:translate(50%,-50%);width:11px;height:11px;border-radius:50%;background:var(--cream);z-index:1}
+.dot.v{border:2px solid var(--voice-ink)} .dot.b{border:2px solid var(--body-ink)} .dot.d{border:2px solid var(--drug-ink)} .dot.l{border:2px solid var(--lab-ink)} .dot.m{border:2px solid var(--med-ink)}
+.pill{position:relative;z-index:2;border-radius:16px;padding:8px 12px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px;justify-content:center;width:fit-content;max-width:100%;text-align:center;line-height:1.35}
+.pill .ic{flex:none;display:inline-flex}.pill .ic svg{width:14px;height:14px;stroke-width:1.9}
+.pill.v{background:var(--voice-fill);border:1px solid var(--voice-border);color:var(--voice-ink)}
+.pill.b{background:var(--body-fill);border:1px solid var(--body-border);color:var(--body-ink)}
+.pill.d{background:var(--drug-fill);border:1px solid var(--drug-border);color:var(--drug-ink)}
+.pill.l{background:var(--lab-fill);border:1px solid var(--lab-border);color:var(--lab-ink)}
+.pill.m{background:var(--med-fill);border:1px solid var(--med-border);color:var(--med-ink)}
+
+.syn{position:relative;z-index:1;margin-bottom:8px;border-radius:18px;background:rgba(251,240,222,.72);border:1px solid #ECD9BF;padding:4px 0 2px}
+.syn .brow{margin-bottom:0}
+.syn-note{display:flex;align-items:flex-start;gap:8px;padding:6px 16px 10px;font-size:12.5px;font-weight:600;color:var(--brown);line-height:1.5}
+.syn-note .lk{color:var(--med-ink);flex:none;margin-top:1px}.syn-note .lk svg{width:15px;height:15px}
+
+.ai-foot{margin-top:18px;background:var(--white);border:1px solid var(--line);border-radius:18px;padding:15px}
+.ai-foot h3{margin:0 0 6px;font-size:15px;display:flex;align-items:center;gap:8px}
+.ai-foot h3 .hic{color:var(--rose)}.ai-foot h3 .hic svg{width:17px;height:17px}
+.ai-foot h3 .chip{font-size:10.5px;font-weight:700;color:var(--med-ink);background:var(--med-fill);border:1px solid var(--med-border);padding:2px 8px;border-radius:999px}
+.ai-foot p{margin:6px 0 0;font-size:12.5px;color:var(--brown)}
+.ai-foot .dis{margin-top:10px;font-size:11.5px;color:var(--brown2);background:#FBEEE1;border:1px solid var(--peach);border-radius:12px;padding:11px}
+
+/* ============ WRITE TO AI ============ */
+.chat{height:440px;display:flex;flex-direction:column}
+.messages{flex:1;overflow:auto;padding:6px}
+.msg{max-width:84%;padding:12px 15px;border-radius:18px;margin:8px 0;line-height:1.7}
+.msg.ai{background:var(--med-fill);border:1px solid var(--med-border);margin-left:auto}
+.msg.user{background:var(--pink2);border:1px solid var(--voice-border);margin-right:auto}
+.msg.care{background:#FBEEE1;border:1px solid var(--peach);margin-left:auto}
+.chatbar{display:flex;gap:8px;margin-top:10px}.chatbar input{flex:1;border:1px solid var(--line);border-radius:16px;padding:12px;background:var(--white)}
+.insight{border-radius:14px;padding:13px;margin:8px 0;border:1px solid var(--line);background:var(--cream2);display:flex;gap:10px;align-items:flex-start}
+.insight .iic{flex:none;margin-top:2px;color:var(--rose)}.insight .iic svg{width:18px;height:18px}
+.insight.safe{background:var(--green-fill);border-color:#C7E4D1}.insight.safe .iic{color:var(--green)}
+.insight strong{display:block;margin-bottom:2px}
+.resources{display:none;margin-top:16px;background:#FBEEE1;border:1px solid var(--peach);border-radius:20px;padding:20px}
+.resources h3{margin:0 0 8px;font-size:18px;color:#8A4A2E}
+.resources p{margin:6px 0;font-size:14px;line-height:1.8}
+.res-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.res-row a{flex:1;min-width:190px;text-decoration:none;background:var(--white);border:1px solid var(--peach);border-radius:14px;padding:14px;color:var(--brown)}
+.res-row a b{display:block;font-size:15px;margin-bottom:3px}
+
+/* ============ DATA ENTRY ============ */
+.entry-card{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:12px}
+.entry-card h3{margin:0 0 4px;font-size:16px;display:flex;align-items:center;gap:8px}
+.entry-card h3 .hic svg{width:18px;height:18px}
+.entry-card h3 .hic.d{color:var(--drug-ink)} .entry-card h3 .hic.l{color:var(--lab-ink)} .entry-card h3 .hic.m{color:var(--med-ink)} .entry-card h3 .hic.v{color:var(--voice-ink)} .entry-card h3 .hic.k{color:var(--brown2)}
+.entry-card .eh{color:var(--brown2);font-size:12.5px;margin:0 0 12px}
+.field-row{display:flex;gap:8px;flex-wrap:wrap}
+.field-row input,.field-row select{flex:1;min-width:130px;border:1px solid var(--line);border-radius:12px;padding:11px;background:var(--cream)}
+.connect{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.two{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-top:14px}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}}
+@media(max-width:520px){header{padding:16px 14px}main{padding:10px 14px 30px}nav{padding:8px 14px}.pill{font-size:11px;padding:7px 10px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand"><div class="logo"><svg viewBox="0 0 24 24" fill="#C86B7C"><path d="M12 21s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.4-7 10-7 10Z"/></svg></div><div><h1>Health Strata</h1><div class="subtitle">قصة صحية واحدة، بدل معلومات متفرّقة</div></div></div>
+  <button class="add-btn" onclick="go('entry')"><span class="i" data-icon="plus"></span> أضف</button>
+</header>
+
+<nav id="nav">
+  <button data-page="home">الرئيسية</button>
+  <button data-page="entry">إدخال البيانات</button>
+  <button data-page="chart">المخطط</button>
+  <button data-page="write"><span class="i" data-icon="chat"></span> الكتابة للمساعد</button>
+</nav>
+
+<main>
+<!-- HOME -->
+<section id="home" class="page active">
+  <div class="intro">
+    <h2>أهلًا بك</h2>
+    <p>قصتك الصحية في مخطط واحد — صوتك، جسدك، أدويتك، تحاليلك، وزياراتك، مرتّبًا بالوقت في مسارات متوازية. ابدأ بإدخال بياناتك.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
+      <button class="primary" onclick="go('entry')">＋ أدخل بياناتك</button>
+      <button class="ghost" onclick="go('chart')">افتح المخطط ←</button>
+      <button class="ghost" onclick="go('write')"><span class="i" data-icon="chat"></span> اكتب للمساعد</button>
+    </div>
+  </div>
+  <h2 class="section-title">ملخص اليوم</h2>
+  <div class="grid">
+    <div class="card"><div class="mic i" data-icon="heart" style="color:var(--voice-ink)"></div><h3>النبض</h3><div class="metric">78</div><div class="muted">bpm</div></div>
+    <div class="card"><div class="mic i" data-icon="moon" style="color:var(--med-ink)"></div><h3>النوم</h3><div class="metric">6:42</div><div class="muted">ساعات</div></div>
+    <div class="card"><div class="mic i" data-icon="activity" style="color:var(--body-ink)"></div><h3>النشاط</h3><div class="metric">5,240</div><div class="muted">خطوة</div></div>
+    <div class="card"><div class="mic i" data-icon="pill" style="color:var(--drug-ink)"></div><h3>أدوية اليوم</h3><div class="metric" id="hMeds">2</div><div class="muted">مواعيد</div></div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center"><b>آخر ما دخل مخططك</b><button class="ghost small" onclick="go('chart')">الكل ←</button></div>
+    <div id="homePeek" style="margin-top:8px"></div>
+  </div>
+</section>
+
+<!-- DATA ENTRY -->
+<section id="entry" class="page">
+  <h2 class="section-title">إدخال البيانات</h2>
+  <div class="intro" style="padding:18px"><p style="margin:0;font-size:14px">كل ما تضيفه هنا يظهر مباشرة في عموده بالمخطط. ابدأ بربط جهازك، وأضف أدويتك وتحاليلك وزياراتك.</p></div>
+  <div class="entry-card">
+    <div class="connect"><div><h3><span class="hic k i" data-icon="link"></span> اربط جهازك</h3><p class="eh" style="margin:0">نبض · نوم · خطوات — تلقائيًا</p></div>
+    <button class="ghost" onclick="alert('في النسخة الحقيقية: ربط Apple Health / Google Fit')">ربط</button></div>
+  </div>
+  <div class="entry-card">
+    <h3><span class="hic d i" data-icon="pill"></span> أضف دواء</h3><p class="eh">يظهر في عمود الأدوية (أخضر)</p>
+    <div class="field-row"><input id="mName" placeholder="اسم الدواء"><input id="mDose" placeholder="الجرعة (مثال: 5 ملغ)"></div>
+    <div class="field-row" style="margin-top:8px"><input id="mFreq" placeholder="الموعد (اختياري)"><button class="primary" onclick="addMed()">حفظ في المخطط</button></div>
+  </div>
+  <div class="entry-card">
+    <h3><span class="hic l i" data-icon="flask"></span> أضف نتيجة تحليل</h3><p class="eh">يظهر في عمود التحاليل (أزرق)</p>
+    <div class="field-row"><input id="lName" placeholder="اسم التحليل"><input id="lVal" placeholder="القيمة"><input id="lUnit" placeholder="الوحدة"></div>
+    <div class="field-row" style="margin-top:8px"><select id="lFlag"><option value="ok">طبيعي</option><option value="high">مرتفع</option><option value="low">منخفض</option></select><button class="primary" onclick="addLab()">حفظ في المخطط</button></div>
+  </div>
+  <div class="entry-card">
+    <h3><span class="hic m i" data-icon="steth"></span> أضف زيارة وكلام الطبيب</h3><p class="eh">يظهر في عمود الرحلة الطبية (لافندر)</p>
+    <div class="field-row"><input id="vWho" placeholder="الطبيب/المستشفى"></div>
+    <div class="field-row" style="margin-top:8px"><input id="vQuote" placeholder="ماذا قال الطبيب؟ (اختياري)"><button class="primary" onclick="addVisit()">حفظ في المخطط</button></div>
+  </div>
+  <div class="entry-card">
+    <div class="connect"><div><h3><span class="hic v i" data-icon="chat"></span> سجّل شعورك</h3><p class="eh" style="margin:0">يظهر في عمود صوت المريض</p></div>
+    <button class="ghost" onclick="go('write')">اكتب ←</button></div>
+  </div>
+  <div class="entry-card"><h3>آخر ما أُضيف</h3><div class="recent" id="entryRecent"></div></div>
+</section>
+
+<!-- CHART -->
+<section id="chart" class="page">
+  <div class="intro" style="padding:18px">
+    <h2 style="font-size:20px;margin:0 0 6px">مخططك الصحي</h2>
+    <p style="font-size:14px">خمسة مسارات بعناوينها فوق، والوقت على اليمين. كل بطاقة بعنوانها وأيقونتها. الأسطر المعلّمة بأيقونة الرابط هي ملاحظات المساعد.</p>
+  </div>
+  <div class="chart-hint">↔ مرّر المخطط أفقيًا لرؤية المسارات الخمسة كاملة</div>
+
+  <div class="board-scroll">
+    <div class="board">
+      <div class="bhead" id="bhead"></div>
+      <div class="tl-wrap">
+        <div class="rails"><div class="r"></div><div class="r rail v"></div><div class="r rail b"></div><div class="r rail d"></div><div class="r rail l"></div><div class="r rail m"></div></div>
+        <div id="chartBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ai-foot">
+    <h3><span class="hic i" data-icon="heart"></span> ملاحظات المساعد <span class="chip">ليست تشخيصًا</span></h3>
+    <p>نمط ملاحَظ: التوتر/قلة النوم المُبلَّغ تزامن مع ارتفاع في النبض في 4 أيام من أصل 9 فيها بيانات كافية (base rate).</p>
+    <div class="dis">الأسطر المعلّمة بأيقونة الرابط داخل المخطط والملاحظة أعلاه هي تزامن زمني وملاحظات تنظيمية فقط — لا تعني علاقة سببية أو تشخيصًا، والقرار للطبيب مع مراجعة الأدلة.</div>
+  </div>
+</section>
+
+<!-- WRITE -->
+<section id="write" class="page">
+  <h2 class="section-title">الكتابة للمساعد</h2>
+  <div class="two">
+    <div class="card chat">
+      <div class="messages" id="messages">
+        <div class="msg ai">أهلًا، احكِ لي بطريقتك: كيف تشعر اليوم — جسديًا أو نفسيًا؟ حتى لو التفاصيل غير مرتبة، أرتبها لك وتظهر في مخططك.</div>
+      </div>
+      <div class="chatbar">
+        <input id="chatInput" placeholder="اكتبي ما تشعرين به..." onkeydown="if(event.key==='Enter')send()">
+        <button class="primary" onclick="send()">إرسال</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">ما الذي يفعله المساعد؟</h3>
+      <div class="insight"><span class="iic i" data-icon="edit"></span><span><strong>يفهم كلامك</strong><span class="muted">يستخرج الأعراض والمشاعر والأوقات.</span></span></div>
+      <div class="insight"><span class="iic i" data-icon="clock"></span><span><strong>يضيفه لمخططك</strong><span class="muted">في عمود «صوت المريض».</span></span></div>
+      <div class="insight safe"><span class="iic i" data-icon="steth"></span><span><strong>لا يشخّص</strong><span class="muted">يُظهر الأنماط، والقرار للطبيب.</span></span></div>
+    </div>
+  </div>
+  <!-- DEV: استبدل الأرقام بأرقام الطوارئ/الدعم النفسي الرسمية الصحيحة حسب دولة المستخدم -->
+  <div class="resources" id="resources">
+    <h3>لست وحدك</h3>
+    <p id="resourcesLead">اللي تمرّ فيه مهم، وسلامتك تجي قبل أي شيء. المساعد أداة تنظيم — مو بديل عن دعم إنسان الآن.</p>
+    <div class="res-row">
+      <a href="tel:997"><b>خطر الآن؟ اتصل بالطوارئ</b>مثال: 997 الإسعاف (السعودية) — أو رقم بلدك</a>
+      <a href="#"><b>تحتاج تتكلم مع أحد؟</b>خط الدعم النفسي المحلي — أو شخص تثق فيه</a>
+    </div>
+  </div>
+</section>
+</main>
+</div>
+
+<script>
+/* ---------- line icons (SVG, currentColor) ---------- */
+function icon(name){
+  var P={
+    chat:'<path d="M20 11.5a7.5 7.5 0 0 1-10.9 6.7L4.5 19.5l1.3-3.9A7.5 7.5 0 1 1 20 11.5Z"/>',
+    heart:'<path d="M12 20s-6.6-4.3-6.6-9.1A3.7 3.7 0 0 1 12 7.1a3.7 3.7 0 0 1 6.6 3.8C18.6 15.7 12 20 12 20Z"/>',
+    pill:'<rect x="2.5" y="8.6" width="19" height="6.8" rx="3.4" transform="rotate(-45 12 12)"/><line x1="8.4" y1="8.4" x2="15.6" y2="15.6"/>',
+    flask:'<path d="M9 3.5h6M10 3.5v5L5.6 16.2A1.8 1.8 0 0 0 7.2 19h9.6a1.8 1.8 0 0 0 1.6-2.8L14 8.5v-5"/><line x1="8" y1="13.6" x2="16" y2="13.6"/>',
+    steth:'<path d="M6 3.5v4a3.7 3.7 0 0 0 7.4 0v-4"/><path d="M9.7 14.8a4.3 4.3 0 0 0 8.6 0v-1.4"/><circle cx="18.3" cy="11.4" r="1.9"/>',
+    cross:'<rect x="4" y="4" width="16" height="16" rx="4.5"/><path d="M12 8.5v7M8.5 12h7"/>',
+    link:'<path d="M10.6 13.4a3.8 3.8 0 0 0 5.4 0l2-2a3.8 3.8 0 1 0-5.4-5.4l-1 1"/><path d="M13.4 10.6a3.8 3.8 0 0 0-5.4 0l-2 2a3.8 3.8 0 1 0 5.4 5.4l1-1"/>',
+    moon:'<path d="M20 13.2A8 8 0 1 1 10.8 4a6.5 6.5 0 0 0 9.2 9.2Z"/>',
+    activity:'<path d="M3 12h4l2.4-6 4 12 2.4-6H21"/>',
+    edit:'<path d="M5 19h4L19 9a2 2 0 0 0-3-3L6 16Z"/><path d="M14 7l3 3"/>',
+    plus:'<path d="M12 5v14M5 12h14"/>',
+    clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.6V12l3.1 2"/>'
+  };
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+(P[name]||'')+'</svg>';
+}
+function fillIcons(){ var els=document.querySelectorAll('[data-icon]'); for(var i=0;i<els.length;i++){ els[i].innerHTML=icon(els[i].getAttribute('data-icon')); } }
+
+var state = {
+  medsCount:2,
+  chart:[
+    {t:'٢٠ أغسطس', d:'قبل أيام', lanes:{ m:[{k:'visit',x:'د. أحمد — باطنية'}] }},
+    {t:'٢٠ أغسطس', d:'قبل أيام', lanes:{ d:[{k:'med',x:'ميتفورمين ٥٠٠'}], l:[{k:'lab',x:'HbA1c ٦.٤ · مرتفع'}] }},
+    {t:'٥:٤٥', d:'اليوم — نوبة قلق', lanes:{ v:[{k:'voice',x:'أرق وضيقة'}], b:[{k:'body',x:'نوم ساعتين'}] }},
+    {t:'٦:٠٠', d:'اليوم — نوبة قلق', syn:'الخوف تزامن مع قفزة في النبض خلال دقائق', lanes:{ v:[{k:'voice',x:'خوف مفاجئ'}], b:[{k:'body',x:'نبض ١١٨'}] }},
+    {t:'٦:١٥', d:'اليوم — نوبة قلق', lanes:{ b:[{k:'body',x:'ضيق نفس'}] }},
+    {t:'٦:٤٠', d:'اليوم — نوبة قلق', syn:'تصاعد الأعراض قاد لزيارة الطوارئ', lanes:{ v:[{k:'voice',x:'قررت أروح'}], m:[{k:'visit',x:'الطوارئ'}] }},
+    {t:'٧:١٠', d:'اليوم — نوبة قلق', lanes:{ d:[{k:'med',x:'مهدئ (بالطوارئ)'}], l:[{k:'lab',x:'تخطيط قلب طبيعي'}], m:[{k:'visit',x:'تقييم الطوارئ'}] }},
+    {t:'٨:٠٥', d:'اليوم — نوبة قلق', syn:'طمأنينة الطبيب انعكست على النبض والحالة', lanes:{ v:[{k:'voice',x:'ارتحت'}], b:[{k:'body',x:'نبض ٨٢'}], m:[{k:'doctor',x:'نوبة قلق · القلب سليم'}] }},
+  ],
+};
+var LANES=['v','b','d','l','m'];
+var KCLASS={voice:'v',body:'b',visit:'m',doctor:'m',med:'d',lab:'l'};
+var KICON ={voice:'chat',body:'heart',visit:'cross',doctor:'steth',med:'pill',lab:'flask'};
+
+function go(id){
+  var ps=document.querySelectorAll('.page'); for(var i=0;i<ps.length;i++) ps[i].classList.remove('active');
+  var bs=document.querySelectorAll('#nav button'); for(var j=0;j<bs.length;j++) bs[j].classList.remove('active');
+  document.getElementById(id).classList.add('active');
+  var nb=document.querySelector('#nav button[data-page="'+id+'"]'); if(nb) nb.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+(function(){var bs=document.querySelectorAll('#nav button');for(var i=0;i<bs.length;i++){(function(b){b.onclick=function(){go(b.dataset.page);};})(bs[i]);}})();
+
+function pill(it){ return '<span class="pill '+(KCLASS[it.k]||'m')+'"><span class="ic">'+icon(KICON[it.k]||'cross')+'</span>'+it.x+'</span>'; }
+function lcell(lane, items){
+  var html='<div class="lcell"><span class="dot '+lane+'"></span>';
+  if(items){ for(var i=0;i<items.length;i++) html+=pill(items[i]); }
+  return html+'</div>';
+}
+function rowGrid(r){
+  var html='<div class="brow"><div class="tcell">'+(r.t||'')+'</div>';
+  for(var i=0;i<LANES.length;i++){ html+=lcell(LANES[i], r.lanes[LANES[i]]); }
+  return html+'</div>';
+}
+function renderHead(){
+  document.getElementById('bhead').innerHTML =
+    '<div class="h t">الوقت</div>'
+   +'<div class="h v">'+icon('chat')+' صوت المريض</div>'
+   +'<div class="h b">'+icon('heart')+' الجسد</div>'
+   +'<div class="h d">'+icon('pill')+' الأدوية</div>'
+   +'<div class="h l">'+icon('flask')+' التحاليل</div>'
+   +'<div class="h m">'+icon('steth')+' الرحلة الطبية</div>';
+}
+function renderChart(){
+  var html='', lastDate=null;
+  for(var i=0;i<state.chart.length;i++){
+    var r=state.chart[i];
+    if(r.d!==lastDate){ html+='<div class="date-div"><b>'+r.d+'</b><em></em></div>'; lastDate=r.d; }
+    if(r.syn){
+      html+='<div class="syn">'+rowGrid(r)+'<div class="syn-note"><span class="lk">'+icon('link')+'</span><span>'+r.syn+'</span></div></div>';
+    } else { html+=rowGrid(r); }
+  }
+  document.getElementById('chartBody').innerHTML=html;
+}
+function rowText(r){
+  var arr=[].concat(r.lanes.m||[], r.lanes.l||[], r.lanes.d||[], r.lanes.v||[], r.lanes.b||[]);
+  if(!arr.length) return '';
+  var it=arr[0]; return '<span class="i">'+icon(KICON[it.k]||'cross')+'</span> '+it.x;
+}
+function renderPeek(){
+  var last=state.chart.slice(-3).reverse();
+  var html='';
+  for(var i=0;i<last.length;i++){ html+='<div class="ri"><span>'+rowText(last[i])+'</span><span class="muted">'+(last[i].t||'')+'</span></div>'; }
+  document.getElementById('homePeek').innerHTML=html;
+  document.getElementById('entryRecent').innerHTML=html;
+}
+
+function val(id){ return (document.getElementById(id).value||'').trim(); }
+function pushRow(row){ state.chart.push(row); renderChart(); renderPeek(); }
+function addMed(){
+  var n=val('mName'),d=val('mDose'),f=val('mFreq'); if(!n){alert('اكتب اسم الدواء');return;}
+  pushRow({t:'الآن', d:'اليوم — إضافات', lanes:{ d:[{k:'med', x:n+(d?' '+d:'')+(f?' · '+f:'')}] }});
+  state.medsCount++; document.getElementById('hMeds').textContent=state.medsCount;
+  document.getElementById('mName').value='';document.getElementById('mDose').value='';document.getElementById('mFreq').value='';
+  alert('أُضيف الدواء إلى عمود الأدوية ✓');
+}
+function addLab(){
+  var n=val('lName'),v=val('lVal'),u=val('lUnit'),fl=document.getElementById('lFlag').value;
+  if(!n||!v){alert('اكتب اسم التحليل والقيمة');return;}
+  var fw= fl==='high'?' · مرتفع': fl==='low'?' · منخفض':'';
+  pushRow({t:'الآن', d:'اليوم — إضافات', lanes:{ l:[{k:'lab', x:n+' '+v+(u?' '+u:'')+fw}] }});
+  document.getElementById('lName').value='';document.getElementById('lVal').value='';document.getElementById('lUnit').value='';
+  alert('أُضيف التحليل إلى عمود التحاليل ✓');
+}
+function addVisit(){
+  var w=val('vWho'),q=val('vQuote'); if(!w){alert('اكتب اسم الطبيب/المستشفى');return;}
+  var row={t:'الآن', d:'اليوم — إضافات', lanes:{ m:[{k:'visit', x:w}] }};
+  if(q){ row.syn=q; }
+  pushRow(row);
+  document.getElementById('vWho').value='';document.getElementById('vQuote').value='';
+  alert('أُضيفت الزيارة إلى عمود الرحلة الطبية ✓');
+}
+
+function norm(s){return s.replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[ًٌٍَُِّْـ]/g,'').toLowerCase();}
+var CRISIS_SELF=['انتحار','انتحر','اذي نفسي','اؤذي نفسي','ايذاء نفسي','ابي اموت','ما ابي اعيش','تعبت من حياتي','ما عاد اتحمل','ماعاد اتحمل','اكره حياتي','انهي حياتي','افكر انهي'];
+var CRISIS_PHYS=['الم شديد في صدري','الم قوي في صدري','الم بصدري شديد','ما اقدر اتنفس','ماقدر اتنفس','صعوبه تنفس','ضيق نفس شديد','اختناق'];
+function crisisKind(t){t=norm(t);for(var i=0;i<CRISIS_SELF.length;i++){if(t.indexOf(norm(CRISIS_SELF[i]))>=0)return'self';}for(var j=0;j<CRISIS_PHYS.length;j++){if(t.indexOf(norm(CRISIS_PHYS[j]))>=0)return'phys';}return null;}
+function addMsg(cls,html){var box=document.getElementById('messages');box.insertAdjacentHTML('beforeend','<div class="msg '+cls+'">'+html+'</div>');box.scrollTop=box.scrollHeight;}
+function showResources(kind){
+  var r=document.getElementById('resources');
+  document.getElementById('resourcesLead').textContent = kind==='phys'
+    ? 'اللي توصفه ممكن يحتاج تقييمًا طبيًا عاجلًا. لا تنتظر التطبيق — سلامتك الآن أهم.'
+    : 'اللي تمرّ فيه مهم، وسلامتك تجي قبل أي شيء. المساعد أداة تنظيم — مو بديل عن دعم إنسان الآن.';
+  r.style.display='block'; r.scrollIntoView({behavior:'smooth',block:'center'});
+}
+async function send(){
+  var input=document.getElementById('chatInput'), text=input.value.trim();
+  if(!text)return;
+
+  addMsg('user',escapeHtml(text));
+  input.value='';
+
+  try{
+    var response=await fetch('https://healththon.onrender.com/extract-events',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({text:text})
+    });
+
+    if(!response.ok){
+      throw new Error('API request failed: '+response.status);
+    }
+
+    var data=await response.json();
+    console.log('API Result:',data);
+
+    if(data.crisis_flag){
+      addMsg('care','اللي وصفتيه قد يحتاج دعمًا أو تقييمًا عاجلًا. سلامتك أهم، لذلك يُفضّل التواصل مع شخص تثقين به أو مع جهة طوارئ مناسبة.');
+      showResources('self');
+      return;
+    }
+
+    var lanes={};
+
+    if(Array.isArray(data.emotions) && data.emotions.length){
+      lanes.v=[{k:'voice',x:data.emotions.join('، ')}];
+    }
+
+    if(Array.isArray(data.symptoms) && data.symptoms.length){
+      lanes.b=[{k:'body',x:data.symptoms.join('، ')}];
+    }
+
+    // إذا لم يستخرج النموذج شيئًا، نحفظ النص الأصلي بدل إنشاء صف فارغ.
+    if(!lanes.v && !lanes.b){
+      lanes.v=[{k:'voice',x:'«'+text+'»'}];
+    }
+
+    pushRow({
+      t:data.mentioned_time || 'الآن',
+      d:'اليوم — إضافات',
+      lanes:lanes
+    });
+
+    addMsg('ai','فهمت كلامك ورتبته في مخططك الصحي. أضفت المشاعر والأعراض والوقت المذكور.');
+  }catch(error){
+    console.error('Healththon API error:',error);
+    addMsg('ai','صار خطأ أثناء الاتصال بالمساعد. حاولي مرة ثانية.');
+  }
+}
+
+function escapeHtml(s){return s.replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m];});}
+
+fillIcons(); renderHead(); renderChart(); renderPeek();
+</script>
+</body>
+</html>
